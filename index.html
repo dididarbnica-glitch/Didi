@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Didi darbnīca">
+<title>Didi darbnīca</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap');
+
+:root {
+  --black: #111111;
+  --dark: #222222;
+  --mid: #444444;
+  --soft: #888888;
+  --pale: #AAAAAA;
+  --border: #DDDBD7;
+  --border-light: #EEECEA;
+  --bg: #F2F0EC;
+  --bg-card: #FAFAF8;
+  --white: #FFFFFF;
+  --cream: #F5F2EB;
+  --accent: #B8965A;
+  --accent-light: #F5EFE3;
+  --s-green: #4A7C59; --s-green-bg: #EBF4EE;
+  --s-amber: #9A6B10; --s-amber-bg: #FBF4E6;
+  --s-red: #A03838;   --s-red-bg: #FAECEC;
+  --s-blue: #2E5F80;  --s-blue-bg: #EBF2F8;
+  --s-grey: #666666;  --s-grey-bg: #EFEFEF;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Jost', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; padding-bottom: 80px; }
+
+/* HEADER */
+.header { background: var(--black); color: white; padding: 14px 18px 12px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 16px rgba(0,0,0,0.22); }
+.logo-circle { width: 42px; height: 42px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.logo-dd { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; color: var(--black); letter-spacing: -2px; line-height: 1; user-select: none; }
+.header-text { flex: 1; }
+.header-title { font-weight: 500; font-size: 15px; letter-spacing: 0.04em; color: #fff; line-height: 1.1; }
+.header-sub { font-size: 10px; letter-spacing: 0.12em; color: #888; text-transform: uppercase; margin-top: 1px; }
+.header-btn { background: rgba(255,255,255,0.12); border: none; border-radius: 8px; color: white; font-size: 11px; font-family: 'Jost', sans-serif; padding: 6px 11px; cursor: pointer; transition: background 0.2s; }
+.header-btn:active { background: rgba(255,255,255,0.25); }
+
+/* NAV */
+.nav-tabs { background: var(--black); display: flex; padding: 0 14px 10px; overflow-x: auto; scrollbar-width: none; }
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab { background: none; border: none; color: #666; font-family: 'Jost', sans-serif; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 14px 4px 0; cursor: pointer; white-space: nowrap; position: relative; transition: color 0.2s; }
+.nav-tab.active { color: #fff; }
+.nav-tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 14px; height: 2px; background: var(--accent); border-radius: 2px; }
+
+/* MAIN */
+.main { padding: 16px 14px; max-width: 520px; margin: 0 auto; }
+
+/* CARD */
+.card { background: var(--bg-card); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1px solid rgba(221,219,215,0.5); }
+.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.card-label { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); flex: 1; }
+
+/* FIELDS */
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.field-row.single { grid-template-columns: 1fr; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); }
+input, select, textarea { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; font-family: 'Jost', sans-serif; font-size: 14px; color: var(--black); transition: border-color 0.2s, box-shadow 0.2s; outline: none; width: 100%; -webkit-appearance: none; }
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(184,150,90,0.12); }
+input::placeholder { color: #CCCCCC; }
+select { cursor: pointer; }
+
+/* STATUS BADGE */
+.sbadge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; white-space: nowrap; }
+.sb-apmaksats { background: var(--s-green-bg); color: var(--s-green); }
+.sb-dalejs    { background: var(--s-amber-bg); color: var(--s-amber); }
+.sb-neapmaksats { background: var(--s-red-bg); color: var(--s-red); }
+.sb-rezervets { background: var(--s-blue-bg); color: var(--s-blue); }
+.sb-atcelts   { background: var(--s-grey-bg); color: var(--s-grey); }
+
+/* PRODUCTS */
+.products-list { display: flex; flex-direction: column; gap: 10px; }
+.product-item { background: var(--white); border-radius: var(--radius-sm); padding: 12px; border: 1.5px solid var(--border); position: relative; }
+.product-num { font-size: 9px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pale); margin-bottom: 10px; }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.product-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.btn-remove { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--pale); cursor: pointer; font-size: 16px; padding: 2px 4px; border-radius: 4px; transition: color 0.2s; }
+.btn-remove:active { color: var(--accent); }
+.btn-add-product { width: 100%; padding: 11px; background: none; border: 1.5px dashed var(--border); border-radius: var(--radius-sm); color: var(--soft); font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 0.06em; cursor: pointer; transition: all 0.2s; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* EXTRA */
+.extra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.extra-card { border-radius: var(--radius); padding: 13px 14px; border: 1.5px solid var(--border); background: #F7F5F0; }
+.extra-card-label { font-size: 9px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 10px; color: var(--mid); }
+.extra-input-row { display: flex; align-items: center; gap: 6px; }
+.extra-input-row input { flex: 1; min-width: 0; padding: 8px 9px; font-size: 14px; }
+.extra-calc { font-size: 12px; font-weight: 500; white-space: nowrap; color: var(--accent); min-width: 52px; text-align: right; }
+
+/* TOGGLE */
+.toggle { position: relative; width: 46px; height: 26px; cursor: pointer; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 13px; transition: background 0.25s; }
+.toggle input:checked + .toggle-track { background: var(--accent); }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.25s; box-shadow: 0 1px 4px rgba(0,0,0,0.2); pointer-events: none; }
+.toggle input:checked ~ .toggle-thumb { transform: translateX(20px); }
+
+/* GRAND TOTAL */
+.grand-total-bar { background: var(--black); border-radius: var(--radius); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.grand-total-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #777; }
+.grand-total-val { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: #fff; }
+.total-breakdown { padding: 10px 18px 0; }
+.total-line { display: flex; justify-content: space-between; font-size: 12px; color: #777; margin-bottom: 4px; }
+.total-line.main-line { color: white; font-size: 14px; font-family: 'Cormorant Garamond', serif; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.15); margin-top: 4px; }
+
+/* PAYMENT GRID */
+.payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.pbtn { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; background: var(--white); cursor: pointer; transition: all 0.18s; display: flex; flex-direction: column; align-items: center; gap: 5px; font-family: 'Jost', sans-serif; }
+.pbtn .pi { font-size: 20px; }
+.pbtn .pl { font-size: 11px; color: var(--mid); letter-spacing: 0.03em; }
+.pbtn.sel-apmaksats { border-color: var(--s-green); background: var(--s-green-bg); }
+.pbtn.sel-apmaksats .pl { color: var(--s-green); font-weight: 500; }
+.pbtn.sel-dalejs { border-color: var(--s-amber); background: var(--s-amber-bg); }
+.pbtn.sel-dalejs .pl { color: var(--s-amber); font-weight: 500; }
+.pbtn.sel-neapmaksats { border-color: var(--s-red); background: var(--s-red-bg); }
+.pbtn.sel-neapmaksats .pl { color: var(--s-red); font-weight: 500; }
+.pbtn.sel-rezervets { border-color: var(--s-blue); background: var(--s-blue-bg); }
+.pbtn.sel-rezervets .pl { color: var(--s-blue); font-weight: 500; }
+.pbtn.sel-atcelts { border-color: var(--s-grey); background: var(--s-grey-bg); }
+.pbtn.sel-atcelts .pl { color: var(--s-grey); font-weight: 500; }
+.partial-row { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.partial-row.show { display: grid; }
+.partial-note { font-size: 11px; color: var(--s-green); margin-top: 6px; display: none; }
+
+/* BOTTOM BAR */
+.bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); border-top: 1px solid var(--border); padding: 10px 14px; display: flex; gap: 8px; z-index: 99; box-shadow: 0 -2px 16px rgba(0,0,0,0.08); }
+.btn { flex: 1; padding: 13px 10px; border: none; border-radius: var(--radius-sm); font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.btn-primary { background: var(--black); color: white; flex: 1.5; }
+.btn-primary:active { background: var(--dark); }
+.btn-secondary { background: var(--cream); color: var(--black); border: 1.5px solid var(--border); }
+.btn-secondary:active { background: var(--border); }
+.btn-ghost { background: none; color: var(--soft); border: 1.5px solid var(--border); }
+.btn-ghost:active { background: var(--border); }
+
+/* HOME */
+.home-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 400; margin-bottom: 3px; }
+.home-sub { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); margin-bottom: 18px; }
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.stile { background: var(--bg-card); border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(221,219,215,0.5); box-shadow: var(--shadow); cursor: pointer; transition: transform 0.15s; }
+.stile:active { transform: scale(0.97); }
+.stile-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+.stile-count { font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 400; line-height: 1; }
+.t-aktivi .stile-label, .t-aktivi .stile-count { color: var(--s-blue); }
+.t-neap .stile-label, .t-neap .stile-count { color: var(--s-red); }
+.t-dalejs .stile-label, .t-dalejs .stile-count { color: var(--s-amber); }
+.t-pabeigti .stile-label, .t-pabeigti .stile-count { color: var(--s-green); }
+.t-atcelti .stile-label, .t-atcelti .stile-count { color: var(--s-grey); }
+.section-label { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin-bottom: 10px; }
+.recent-list { display: flex; flex-direction: column; gap: 6px; }
+.ritem { background: var(--bg-card); border-radius: var(--radius-sm); padding: 11px 14px; border: 1px solid rgba(221,219,215,0.4); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: transform 0.15s; }
+.ritem:active { transform: scale(0.99); }
+.ritem-name { font-size: 13px; font-weight: 500; }
+.ritem-num { font-size: 10px; color: var(--soft); margin-top: 2px; }
+.ritem-sum { font-family: 'Cormorant Garamond', serif; font-size: 16px; }
+.ritem-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+
+/* CLIENTS */
+.add-client-box { background: var(--bg-card); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; border: 1.5px dashed var(--border); }
+.add-client-title { font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); margin-bottom: 12px; }
+.client-card { background: var(--bg-card); border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(221,219,215,0.5); box-shadow: var(--shadow); margin-bottom: 8px; }
+.client-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.client-name { font-size: 15px; font-weight: 500; }
+.client-id-tag { font-size: 10px; letter-spacing: 0.1em; color: var(--soft); margin-top: 2px; }
+.client-orders-line { font-size: 11px; color: var(--soft); margin-top: 6px; }
+.client-orders-line b { color: var(--accent); font-weight: 400; }
+.btn-x { background: none; border: none; color: var(--pale); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 4px; flex-shrink: 0; }
+.btn-x:active { color: var(--s-red); }
+
+/* STATS */
+.year-btns { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.ybtn { padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border); background: none; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; cursor: pointer; color: var(--soft); transition: all 0.2s; }
+.ybtn.active { background: var(--black); color: white; border-color: var(--black); }
+.summary-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.sum-tile { background: var(--bg-card); border-radius: var(--radius-sm); padding: 12px 10px; text-align: center; border: 1px solid rgba(221,219,215,0.5); }
+.sum-val { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--black); line-height: 1; margin-bottom: 4px; }
+.sum-lbl { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); }
+.stat-tbl { width: 100%; border-collapse: collapse; }
+.stat-tbl th { font-size: 9px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); text-align: left; padding: 0 8px 10px; }
+.stat-tbl th:not(:first-child) { text-align: right; }
+.stat-tbl td { padding: 10px 8px; font-size: 13px; border-top: 1px solid var(--border-light); }
+.stat-tbl td:not(:first-child) { text-align: right; font-family: 'Cormorant Garamond', serif; font-size: 15px; }
+.stat-zero { color: var(--pale); }
+
+/* ARCHIVE */
+.arch-tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; }
+.atab { padding: 6px 18px; border-radius: 20px; border: 1.5px solid var(--border); background: none; font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.06em; cursor: pointer; color: var(--soft); white-space: nowrap; flex-shrink: 0; transition: all 0.2s; }
+.atab.active { background: var(--black); color: white; border-color: var(--black); }
+.arch-sum { display: flex; gap: 8px; margin-bottom: 14px; }
+.arch-sum-tile { flex: 1; background: var(--bg-card); border-radius: var(--radius-sm); padding: 12px; border: 1px solid rgba(221,219,215,0.5); text-align: center; }
+.arch-sum-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--black); line-height: 1; margin-bottom: 3px; }
+.arch-sum-lbl { font-size: 9px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soft); }
+
+/* ORDER CARD */
+.order-list { display: flex; flex-direction: column; gap: 8px; }
+.ocard { background: var(--bg-card); border-radius: var(--radius); padding: 14px 16px; border: 1px solid rgba(221,219,215,0.5); box-shadow: var(--shadow); cursor: pointer; transition: transform 0.15s; }
+.ocard:active { transform: scale(0.99); }
+.ocard-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.ocard-name { font-size: 14px; font-weight: 500; }
+.ocard-num { font-size: 10px; letter-spacing: 0.1em; color: var(--soft); }
+.ocard-bottom { display: flex; justify-content: space-between; align-items: center; }
+.ocard-sum { font-family: 'Cormorant Garamond', serif; font-size: 18px; }
+.ocard-date { font-size: 10px; color: var(--soft); }
+
+/* EMPTY */
+.empty { text-align: center; padding: 48px 24px; color: var(--soft); }
+.empty-icon { font-size: 32px; margin-bottom: 10px; opacity: 0.4; }
+.empty-text { font-size: 13px; letter-spacing: 0.04em; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--border-light); margin: 12px 0 14px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--black); color: white; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-family: 'Jost', sans-serif; letter-spacing: 0.04em; opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s; z-index: 200; white-space: nowrap; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* PRINT */
+.print-logo { display: none; text-align: center; padding: 20px 0 16px; }
+.plogo-inner { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; }
+.plogo-dd { width: 52px; height: 52px; border-radius: 50%; background: var(--cream); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--black); letter-spacing: -2px; }
+.plogo-name { font-family: 'Jost', sans-serif; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--black); }
+.plogo-sub { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); }
+@media print {
+  body { background: white; padding: 0; }
+  .header, .nav-tabs, .bottom-bar, .btn-remove, .btn-add-product, .toast, .payment-grid, .partial-row { display: none !important; }
+  .main { padding: 0; max-width: none; }
+  .card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  .grand-total-bar { background: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .print-logo { display: block !important; }
+  input, select { border: none !important; padding: 2px 0 !important; background: none !important; box-shadow: none !important; }
+}
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
+</style>
+</head>
+<body>
+
+<div class="print-logo">
+  <div class="plogo-inner">
+    <div class="plogo-dd">DD</div>
+    <div class="plogo-name">Didi darbnīca</div>
+    <div class="plogo-sub">roku darbs mājas sajūtai</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo-circle"><span class="logo-dd">DD</span></div>
+  <div class="header-text">
+    <div class="header-title">Didi darbnīca</div>
+    <div class="header-sub">Pasūtījumi</div>
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" onclick="goNewOrder()">＋ Jauns</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <button class="nav-tab" id="tab-home"    onclick="switchTab('home')">Sākums</button>
+  <button class="nav-tab" id="tab-form"    onclick="switchTab('form')">Forma</button>
+  <button class="nav-tab" id="tab-clients" onclick="switchTab('clients')">Klienti</button>
+  <button class="nav-tab" id="tab-stats"   onclick="switchTab('stats')">Statistika</button>
+  <button class="nav-tab" id="tab-archive" onclick="switchTab('archive')">Arhīvs</button>
+</div>
+
+<div class="main">
+
+  <!-- ═══ SĀKUMS ═══ -->
+  <div id="view-home" style="display:none;">
+    <div class="home-title">Pasūtījumi</div>
+    <div class="home-sub">Didi darbnīca — pārskats</div>
+    <div class="status-grid">
+      <div class="stile t-aktivi"   onclick="goFilteredList('aktivi')">
+        <div class="stile-label">Aktīvie</div>
+        <div class="stile-count" id="cnt-aktivi">0</div>
+      </div>
+      <div class="stile t-neap"    onclick="goFilteredList('neapmaksats')">
+        <div class="stile-label">Neapmaksātie</div>
+        <div class="stile-count" id="cnt-neapmaksats">0</div>
+      </div>
+      <div class="stile t-dalejs"  onclick="goFilteredList('dalejs')">
+        <div class="stile-label">Daļēji apmaksāti</div>
+        <div class="stile-count" id="cnt-dalejs">0</div>
+      </div>
+      <div class="stile t-pabeigti" onclick="goFilteredList('apmaksats')">
+        <div class="stile-label">Pabeigti</div>
+        <div class="stile-count" id="cnt-apmaksats">0</div>
+      </div>
+      <div class="stile t-atcelti" onclick="goFilteredList('atcelts')">
+        <div class="stile-label">Atceltie</div>
+        <div class="stile-count" id="cnt-atcelts">0</div>
+      </div>
+    </div>
+    <div class="section-label">Jaunākie pasūtījumi</div>
+    <div class="recent-list" id="recentList"></div>
+  </div>
+
+  <!-- ═══ FORMA ═══ -->
+  <div id="view-form" style="display:none;">
+    <div class="card">
+      <div class="card-header"><span class="card-label">Klienta dati</span></div>
+      <div class="field-row">
+        <div class="field">
+          <label>Klienta ID</label>
+          <input type="text" id="fClientId" placeholder="K-001" oninput="autoFillById()">
+        </div>
+        <div class="field">
+          <label>Pasūtījuma Nr.</label>
+          <input type="text" id="fOrderNum" placeholder="P-2026-001">
+        </div>
+      </div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Vārds, Uzvārds</label>
+          <input type="text" id="fClientName" placeholder="Anna Bērziņa" oninput="autoFillByName()">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>E-pasts</label>
+          <input type="email" id="fEmail" placeholder="anna@epasts.lv">
+        </div>
+        <div class="field">
+          <label>Telefons</label>
+          <input type="tel" id="fPhone" placeholder="+371 2000 0000">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-label">Produkti</span></div>
+      <div class="products-list" id="productsList"></div>
+      <button class="btn-add-product" onclick="addProduct()"><span style="font-size:16px;">＋</span> Pievienot produktu</button>
+    </div>
+
+    <div class="extra-row">
+      <div class="extra-card">
+        <div class="extra-card-label">🏷 Atlaide</div>
+        <div class="extra-input-row">
+          <input type="number" id="fDiscount" min="0" step="0.01" placeholder="0.00" oninput="updateTotal()">
+          <span class="extra-calc" id="discCalc">− €0.00</span>
+        </div>
+      </div>
+      <div class="extra-card">
+        <div class="extra-card-label">🚚 Piegāde</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;">
+          <label class="toggle" style="width:36px;height:20px;">
+            <input type="checkbox" id="fDeliveryOn" onchange="toggleDelivery()">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb" style="width:14px;height:14px;top:3px;left:3px;"></span>
+          </label>
+          <span style="font-size:11px;color:var(--accent);" id="delivLabel">Nav</span>
+        </div>
+        <div class="extra-input-row" id="delivRow" style="display:none;">
+          <input type="number" id="fDelivery" min="0" step="0.01" placeholder="0.00" oninput="updateTotal()">
+          <span class="extra-calc" id="delivCalc">+ €0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grand-total-bar">
+      <div class="total-breakdown" id="totalBreakdown" style="display:none;width:100%;">
+        <div class="total-line" id="lineProds"><span>Produkti</span><span></span></div>
+        <div class="total-line" id="lineDisc" style="display:none;"><span>Atlaide</span><span></span></div>
+        <div class="total-line" id="lineDeliv" style="display:none;"><span>Piegāde</span><span></span></div>
+        <div class="total-line main-line">
+          <span style="letter-spacing:0.1em;font-size:11px;font-family:'Jost',sans-serif;font-weight:500;text-transform:uppercase;">Kopā</span>
+          <span id="grandTotal" style="font-size:26px;">€ 0.00</span>
+        </div>
+      </div>
+      <div id="simpleTotal" style="display:flex;justify-content:space-between;align-items:center;width:100%;">
+        <span class="grand-total-label">Kopā</span>
+        <span class="grand-total-val" id="grandTotalSimple">€ 0.00</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-label">Apmaksas statuss</span></div>
+      <div class="payment-grid">
+        <button class="pbtn" id="pb-apmaksats"   onclick="setStatus('apmaksats')"><span class="pi">✅</span><span class="pl">Apmaksāts</span></button>
+        <button class="pbtn" id="pb-dalejs"       onclick="setStatus('dalejs')"><span class="pi">⏳</span><span class="pl">Daļēji apmaksāts</span></button>
+        <button class="pbtn" id="pb-neapmaksats"  onclick="setStatus('neapmaksats')"><span class="pi">❌</span><span class="pl">Neapmaksāts</span></button>
+        <button class="pbtn" id="pb-rezervets"    onclick="setStatus('rezervets')"><span class="pi">📌</span><span class="pl">Rezervēts</span></button>
+        <button class="pbtn" id="pb-atcelts"      onclick="setStatus('atcelts')"><span class="pi">✖</span><span class="pl">Atcelts</span></button>
+      </div>
+      <div class="partial-row" id="partialRow">
+        <div class="field">
+          <label>Samaksātā summa (€)</label>
+          <input type="number" id="fPaid" min="0" step="0.01" placeholder="0.00" oninput="updatePartial()">
+        </div>
+        <div class="field">
+          <label>Atlikums</label>
+          <input type="text" id="fRemaining" placeholder="0.00 €" readonly style="background:var(--bg);color:var(--soft);">
+        </div>
+      </div>
+      <div class="partial-note" id="partialNote">✓ Pilnībā samaksāts</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-label">Datums</span></div>
+      <div class="field-row single">
+        <div class="field">
+          <label>Pasūtījuma datums</label>
+          <input type="date" id="fDate">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ KLIENTI ═══ -->
+  <div id="view-clients" style="display:none;">
+    <div class="add-client-box">
+      <div class="add-client-title">Pievienot klientu</div>
+      <div class="field-row">
+        <div class="field"><label>Klienta ID</label><input type="text" id="ncId" placeholder="K-001"></div>
+        <div class="field"><label>Vārds, Uzvārds</label><input type="text" id="ncName" placeholder="Anna Bērziņa"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="addClient()">Saglabāt klientu</button>
+    </div>
+    <div id="clientsList"></div>
+  </div>
+
+  <!-- ═══ STATISTIKA ═══ -->
+  <div id="view-stats" style="display:none;">
+    <div class="year-btns" id="statYears"></div>
+    <div class="summary-row" id="statSummary"></div>
+    <div class="card" style="padding:14px 12px;">
+      <div class="card-header"><span class="card-label">Pa mēnešiem — tikai apmaksātie</span></div>
+      <table class="stat-tbl">
+        <thead><tr><th>Mēnesis</th><th>Skaits</th><th>Summa</th><th>Piegāde</th></tr></thead>
+        <tbody id="statBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ ARHĪVS ═══ -->
+  <div id="view-archive" style="display:none;">
+    <div class="arch-tabs" id="archTabs"></div>
+    <div class="arch-sum" id="archSum"></div>
+    <div id="archList"></div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM BARS -->
+<div class="bottom-bar" id="bar-home"    style="display:none;"><button class="btn btn-primary" style="flex:1;" onclick="goNewOrder()">＋ Jauns pasūtījums</button></div>
+<div class="bottom-bar" id="bar-form"    style="display:none;">
+  <button class="btn btn-ghost" onclick="confirmDeleteOrder()" title="Dzēst">🗑</button>
+  <button class="btn btn-secondary" onclick="copyOrder()">📋 Kopēt</button>
+  <button class="btn btn-secondary" onclick="window.print()">🖨 PDF</button>
+  <button class="btn btn-primary" onclick="saveOrder()">💾 Saglabāt</button>
+</div>
+<div class="bottom-bar" id="bar-clients" style="display:none;"></div>
+<div class="bottom-bar" id="bar-stats"   style="display:none;"></div>
+<div class="bottom-bar" id="bar-archive" style="display:none;"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let currentOrderId = null;
+let currentStatus  = 'neapmaksats';
+let products       = [];
+let statYear       = new Date().getFullYear();
+let archYear       = new Date().getFullYear();
+
+// ── STORAGE ──
+const getOrders  = () => { try { return JSON.parse(localStorage.getItem('didi_orders')  || '[]'); } catch { return []; } };
+const getClients = () => { try { return JSON.parse(localStorage.getItem('didi_clients') || '[]'); } catch { return []; } };
+const saveOrders  = d => localStorage.setItem('didi_orders',  JSON.stringify(d));
+const saveClients = d => localStorage.setItem('didi_clients', JSON.stringify(d));
+
+// ── TABS ──
+const TABS = ['home','form','clients','stats','archive'];
+function switchTab(t) {
+  TABS.forEach(k => {
+    document.getElementById('tab-'  + k).classList.toggle('active', k === t);
+    document.getElementById('view-' + k).style.display = k === t ? 'block' : 'none';
+    document.getElementById('bar-'  + k).style.display = k === t ? 'flex'  : 'none';
+  });
+  if (t === 'home')    renderHome();
+  if (t === 'clients') renderClients();
+  if (t === 'stats')   renderStats();
+  if (t === 'archive') renderArchive();
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('fDate').value = today();
+  autoOrderNum();
+  addProduct();
+  setStatus('neapmaksats');
+  switchTab('home');
+});
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function autoOrderNum() {
+  const year = new Date().getFullYear();
+  const orders = getOrders();
+  let max = 0;
+  orders.filter(o => (o.orderNum||'').startsWith('P-'+year)).forEach(o => {
+    const n = parseInt((o.orderNum||'').split('-')[2]) || 0;
+    if (n > max) max = n;
+  });
+  document.getElementById('fOrderNum').value = 'P-' + year + '-' + String(max + 1).padStart(3,'0');
+}
+
+// ── HOME ──
+function renderHome() {
+  const orders = getOrders();
+  let aktivi = 0, neap = 0, dalejs = 0, apm = 0, atc = 0;
+  orders.forEach(o => {
+    const s = o.status || 'neapmaksats';
+    if      (s === 'apmaksats') apm++;
+    else if (s === 'atcelts')   atc++;
+    else { aktivi++; if (s === 'neapmaksats') neap++; else if (s === 'dalejs') dalejs++; }
+  });
+  document.getElementById('cnt-aktivi').textContent     = aktivi;
+  document.getElementById('cnt-neapmaksats').textContent = neap;
+  document.getElementById('cnt-dalejs').textContent     = dalejs;
+  document.getElementById('cnt-apmaksats').textContent  = apm;
+  document.getElementById('cnt-atcelts').textContent    = atc;
+
+  const recent = [...orders].sort((a,b)=>(b.savedAt||'').localeCompare(a.savedAt||'')).slice(0,5);
+  const el = document.getElementById('recentList');
+  if (!recent.length) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">Nav pasūtījumu</div></div>'; return; }
+  el.innerHTML = recent.map(o => `
+    <div class="ritem" onclick="openOrder('${o.id}')">
+      <div><div class="ritem-name">${o.clientName||'—'}</div><div class="ritem-num">${o.orderNum||''}</div></div>
+      <div class="ritem-right"><div class="ritem-sum">€ ${calcTotal(o).toFixed(2)}</div>${badge(o.status)}</div>
+    </div>`).join('');
+}
+
+function goFilteredList(s) { switchTab('form'); }
+function goNewOrder() { switchTab('form'); newOrder(); }
+
+// ── STATUS ──
+function setStatus(s) {
+  currentStatus = s;
+  ['apmaksats','dalejs','neapmaksats','rezervets','atcelts'].forEach(k => {
+    document.getElementById('pb-'+k).className = 'pbtn' + (k===s?' sel-'+k:'');
+  });
+  const pr = document.getElementById('partialRow');
+  const pn = document.getElementById('partialNote');
+  if (s === 'dalejs') { pr.classList.add('show'); updatePartial(); }
+  else { pr.classList.remove('show'); pn.style.display = 'none'; }
+}
+
+function updatePartial() {
+  const paid  = parseFloat(document.getElementById('fPaid').value) || 0;
+  const total = calcTotalForm();
+  const rem   = Math.max(0, total - paid);
+  document.getElementById('fRemaining').value = rem.toFixed(2) + ' €';
+  document.getElementById('partialNote').style.display = (paid >= total && total > 0) ? 'block' : 'none';
+}
+
+function badge(s) {
+  const m = { apmaksats:['sb-apmaksats','✓ Apmaksāts'], dalejs:['sb-dalejs','⏳ Daļēji'], neapmaksats:['sb-neapmaksats','✗ Neapmaksāts'], rezervets:['sb-rezervets','📌 Rezervēts'], atcelts:['sb-atcelts','✖ Atcelts'] };
+  const [c,l] = m[s]||m.neapmaksats;
+  return `<span class="sbadge ${c}">${l}</span>`;
+}
+
+// ── PRODUCTS ──
+function addProduct() { products.push({name:'',aroma:'',color:'',qty:1,price:''}); renderProducts(); }
+function removeProduct(i) { products.splice(i,1); if(!products.length) products.push({name:'',aroma:'',color:'',qty:1,price:''}); renderProducts(); }
+
+function renderProducts() {
+  const c = document.getElementById('productsList');
+  c.innerHTML = products.map((p,i) => {
+    const lt = (parseFloat(p.price)||0)*(parseInt(p.qty)||0);
+    return `<div class="product-item" id="pi-${i}">
+      <div class="product-num">Produkts ${i+1}</div>
+      ${products.length>1?`<button class="btn-remove" onclick="removeProduct(${i})">×</button>`:''}
+      <div class="product-grid">
+        <div class="field" style="grid-column:1/-1;"><label>Nosaukums</label><input type="text" value="${e(p.name)}" placeholder="Ziepes, Svece..." oninput="updProd(${i},'name',this.value)"></div>
+        <div class="field"><label>Aromāts</label><input type="text" value="${e(p.aroma)}" placeholder="Lavanda..." oninput="updProd(${i},'aroma',this.value)"></div>
+        <div class="field"><label>Krāsa</label><input type="text" value="${e(p.color)}" placeholder="Balta..." oninput="updProd(${i},'color',this.value)"></div>
+      </div>
+      <div class="product-grid-3">
+        <div class="field"><label>Daudzums</label><input type="number" value="${p.qty}" min="1" oninput="updProd(${i},'qty',this.value)"></div>
+        <div class="field"><label>€ / gb.</label><input type="number" value="${p.price}" min="0" step="0.01" placeholder="0.00" oninput="updProd(${i},'price',this.value)"></div>
+        <div class="field"><label>Kopā</label><input type="text" value="${lt>0?'€ '+lt.toFixed(2):''}" placeholder="€ 0.00" readonly style="background:var(--bg);color:var(--black);font-weight:500;"></div>
+      </div>
+    </div>`;
+  }).join('');
+  updateTotal();
+}
+
+function updProd(i, f, v) {
+  products[i][f] = v;
+  const p = products[i];
+  const lt = (parseFloat(p.price)||0)*(parseInt(p.qty)||0);
+  const el = document.getElementById('pi-'+i);
+  if (el) { const ro = el.querySelectorAll('input[readonly]'); if(ro[0]) ro[0].value = lt>0?'€ '+lt.toFixed(2):''; }
+  updateTotal();
+  if (currentStatus==='dalejs') updatePartial();
+}
+
+function e(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+// ── TOTALS ──
+function calcTotalForm() {
+  const sub  = products.reduce((s,p)=>s+(parseFloat(p.price)||0)*(parseInt(p.qty)||0),0);
+  const disc = parseFloat(document.getElementById('fDiscount').value)||0;
+  const don  = document.getElementById('fDeliveryOn').checked;
+  const del  = don?(parseFloat(document.getElementById('fDelivery').value)||0):0;
+  return Math.max(0, sub - disc + del);
+}
+function calcTotal(o) {
+  const sub = (o.products||[]).reduce((s,p)=>s+(parseFloat(p.price)||0)*(parseInt(p.qty)||0),0);
+  return Math.max(0, sub - (o.discount||0) + (o.deliveryOn?(o.delivery||0):0));
+}
+
+function updateTotal() {
+  const sub  = products.reduce((s,p)=>s+(parseFloat(p.price)||0)*(parseInt(p.qty)||0),0);
+  const disc = parseFloat(document.getElementById('fDiscount').value)||0;
+  const don  = document.getElementById('fDeliveryOn').checked;
+  const del  = don?(parseFloat(document.getElementById('fDelivery').value)||0):0;
+  const tot  = Math.max(0, sub - disc + del);
+  document.getElementById('discCalc').textContent  = disc>0?'− €'+disc.toFixed(2):'− €0.00';
+  if (don) document.getElementById('delivCalc').textContent = del>0?'+ €'+del.toFixed(2):'+ €0.00';
+  const hasX = disc>0||(don&&del>0);
+  document.getElementById('totalBreakdown').style.display = hasX?'block':'none';
+  document.getElementById('simpleTotal').style.display    = hasX?'none':'flex';
+  if (hasX) {
+    document.getElementById('grandTotal').textContent = '€ '+tot.toFixed(2);
+    document.getElementById('lineProds').children[1].textContent = '€ '+sub.toFixed(2);
+    const ld = document.getElementById('lineDisc');
+    ld.style.display = disc>0?'flex':'none';
+    ld.children[1].textContent = '− €'+disc.toFixed(2);
+    ld.children[1].style.color = 'var(--accent)';
+    const ldv = document.getElementById('lineDeliv');
+    ldv.style.display = (don&&del>0)?'flex':'none';
+    ldv.children[1].textContent = '+ €'+del.toFixed(2);
+  } else {
+    document.getElementById('grandTotalSimple').textContent = '€ '+tot.toFixed(2);
+  }
+  if (currentStatus==='dalejs') updatePartial();
+}
+
+function toggleDelivery() {
+  const on = document.getElementById('fDeliveryOn').checked;
+  document.getElementById('delivRow').style.display   = on?'flex':'none';
+  document.getElementById('delivLabel').textContent   = on?'Ir':'Nav';
+  updateTotal();
+}
+
+// ── AUTOCOMPLETE ──
+function autoFillById() {
+  const v = document.getElementById('fClientId').value.trim();
+  if (!v) return;
+  const c = getClients().find(x => x.id.toLowerCase()===v.toLowerCase());
+  if (c) document.getElementById('fClientName').value = c.name;
+}
+function autoFillByName() {
+  const v = document.getElementById('fClientName').value.trim();
+  if (!v) return;
+  const c = getClients().find(x => x.name.toLowerCase()===v.toLowerCase());
+  if (c) document.getElementById('fClientId').value = c.id;
+}
+
+// ── SAVE / LOAD / DELETE ORDER ──
+function collectForm() {
+  return {
+    id:         currentOrderId || Date.now().toString(),
+    clientId:   document.getElementById('fClientId').value,
+    orderNum:   document.getElementById('fOrderNum').value,
+    clientName: document.getElementById('fClientName').value,
+    clientEmail:document.getElementById('fEmail').value,
+    clientPhone:document.getElementById('fPhone').value,
+    orderDate:  document.getElementById('fDate').value,
+    status:     currentStatus,
+    paidAmount: parseFloat(document.getElementById('fPaid').value)||0,
+    products:   JSON.parse(JSON.stringify(products)),
+    discount:   parseFloat(document.getElementById('fDiscount').value)||0,
+    deliveryOn: document.getElementById('fDeliveryOn').checked,
+    delivery:   parseFloat(document.getElementById('fDelivery').value)||0,
+    savedAt:    new Date().toISOString()
+  };
+}
+
+function saveOrder() {
+  const d = collectForm();
+  if (!d.clientName && !d.orderNum) { showToast('⚠️ Ievadi klienta vārdu vai pasūtījuma Nr.'); return; }
+  const orders = getOrders();
+  const idx = orders.findIndex(o => o.id === d.id);
+  if (idx>=0) orders[idx]=d; else orders.unshift(d);
+  saveOrders(orders);
+  currentOrderId = d.id;
+  autoSaveClient(d.clientId, d.clientName);
+  showToast('✓ Saglabāts');
+}
+
+function autoSaveClient(id, name) {
+  if (!id||!name) return;
+  const clients = getClients();
+  if (!clients.find(c=>c.id===id)) { clients.push({id,name,createdAt:new Date().toISOString()}); saveClients(clients); }
+}
+
+function loadOrder(id) {
+  const o = getOrders().find(x=>x.id===id);
+  if (!o) return;
+  currentOrderId = o.id;
+  document.getElementById('fClientId').value    = o.clientId||'';
+  document.getElementById('fOrderNum').value    = o.orderNum||'';
+  document.getElementById('fClientName').value  = o.clientName||'';
+  document.getElementById('fEmail').value       = o.clientEmail||'';
+  document.getElementById('fPhone').value       = o.clientPhone||'';
+  document.getElementById('fDate').value        = o.orderDate||'';
+  document.getElementById('fDiscount').value    = o.discount||'';
+  document.getElementById('fDeliveryOn').checked= o.deliveryOn||false;
+  document.getElementById('delivRow').style.display  = o.deliveryOn?'flex':'none';
+  document.getElementById('delivLabel').textContent  = o.deliveryOn?'Ir':'Nav';
+  if (o.deliveryOn) document.getElementById('fDelivery').value = o.delivery||'';
+  document.getElementById('fPaid').value = o.paidAmount||'';
+  setStatus(o.status||'neapmaksats');
+  products = o.products ? JSON.parse(JSON.stringify(o.products)) : [{name:'',aroma:'',color:'',qty:1,price:''}];
+  renderProducts();
+  switchTab('form');
+}
+
+function openOrder(id) { loadOrder(id); }
+
+function newOrder() {
+  currentOrderId = null;
+  ['fClientId','fClientName','fEmail','fPhone','fDiscount','fDelivery','fPaid','fRemaining'].forEach(id => { document.getElementById(id).value=''; });
+  document.getElementById('fDate').value = today();
+  document.getElementById('fDeliveryOn').checked = false;
+  document.getElementById('delivRow').style.display = 'none';
+  document.getElementById('delivLabel').textContent = 'Nav';
+  document.getElementById('partialNote').style.display = 'none';
+  setStatus('neapmaksats');
+  autoOrderNum();
+  products = [{name:'',aroma:'',color:'',qty:1,price:''}];
+  renderProducts();
+}
+
+function confirmDeleteOrder() {
+  if (!currentOrderId) { if(confirm('Notīrīt formu?')) newOrder(); return; }
+  if (confirm('Dzēst šo pasūtījumu? Šo darbību nevar atsaukt.')) {
+    saveOrders(getOrders().filter(o=>o.id!==currentOrderId));
+    showToast('✓ Pasūtījums dzēsts');
+    newOrder();
+    switchTab('home');
+  }
+}
+
+// ── KLIENTI ──
+function renderClients() {
+  const clients = getClients();
+  const orders  = getOrders();
+  const el = document.getElementById('clientsList');
+  if (!clients.length) { el.innerHTML='<div class="empty"><div class="empty-icon">👤</div><div class="empty-text">Nav saglabātu klientu</div></div>'; return; }
+  el.innerHTML = clients.map(c => {
+    const nums = orders.filter(o=>o.clientId===c.id).map(o=>o.orderNum).filter(Boolean);
+    return `<div class="client-card">
+      <div class="client-card-top">
+        <div><div class="client-name">${c.name}</div><div class="client-id-tag">${c.id}</div></div>
+        <button class="btn-x" onclick="deleteClient('${c.id}')">✕</button>
+      </div>
+      <div class="client-orders-line">${nums.length?'Pasūtījumi: <b>'+nums.join(', ')+'</b>':'Nav pasūtījumu'}</div>
+    </div>`;
+  }).join('');
+}
+
+function addClient() {
+  const id   = document.getElementById('ncId').value.trim();
+  const name = document.getElementById('ncName').value.trim();
+  if (!id||!name) { showToast('⚠️ Ievadi ID un vārdu'); return; }
+  const clients = getClients();
+  if (clients.find(c=>c.id===id)) { showToast('⚠️ Šāds ID jau eksistē'); return; }
+  clients.push({id,name,createdAt:new Date().toISOString()});
+  saveClients(clients);
+  document.getElementById('ncId').value='';
+  document.getElementById('ncName').value='';
+  renderClients();
+  showToast('✓ Klients saglabāts');
+}
+
+function deleteClient(id) {
+  if (!confirm('Dzēst šo klientu?')) return;
+  saveClients(getClients().filter(c=>c.id!==id));
+  renderClients();
+  showToast('✓ Klients dzēsts');
+}
+
+// ── STATISTIKA ──
+function renderStats() {
+  const paid = getOrders().filter(o=>o.status==='apmaksats');
+  const allYears = [...new Set(paid.map(o=>(o.orderDate||'').slice(0,4)).filter(Boolean))];
+  const thisYear = String(new Date().getFullYear());
+  if (!allYears.includes(thisYear)) allYears.push(thisYear);
+  allYears.sort();
+  if (!allYears.includes(String(statYear))) statYear = parseInt(allYears[allYears.length-1]);
+
+  document.getElementById('statYears').innerHTML = allYears.map(y=>
+    `<button class="ybtn${parseInt(y)===statYear?' active':''}" onclick="statYear=${y};renderStats()">${y}</button>`
+  ).join('');
+
+  const yo = paid.filter(o=>(o.orderDate||'').startsWith(statYear));
+  const totalSum = yo.reduce((s,o)=>s+calcTotal(o),0);
+  const totalDel = yo.filter(o=>o.deliveryOn).reduce((s,o)=>s+(o.delivery||0),0);
+
+  document.getElementById('statSummary').innerHTML = `
+    <div class="sum-tile"><div class="sum-val">${yo.length}</div><div class="sum-lbl">Pasūtījumi</div></div>
+    <div class="sum-tile"><div class="sum-val" style="font-size:17px;">€${totalSum.toFixed(2)}</div><div class="sum-lbl">Kopā</div></div>
+    <div class="sum-tile"><div class="sum-val" style="font-size:17px;">€${totalDel.toFixed(2)}</div><div class="sum-lbl">Piegādes</div></div>`;
+
+  const months = ['Janvāris','Februāris','Marts','Aprīlis','Maijs','Jūnijs','Jūlijs','Augusts','Septembris','Oktobris','Novembris','Decembris'];
+  document.getElementById('statBody').innerHTML = months.map((nm,mi) => {
+    const mo = String(mi+1).padStart(2,'0');
+    const mo_orders = yo.filter(o=>(o.orderDate||'').startsWith(statYear+'-'+mo));
+    const ms = mo_orders.reduce((s,o)=>s+calcTotal(o),0);
+    const md = mo_orders.filter(o=>o.deliveryOn).reduce((s,o)=>s+(o.delivery||0),0);
+    const z  = !mo_orders.length;
+    return `<tr>
+      <td class="${z?'stat-zero':''}">${nm}</td>
+      <td class="${z?'stat-zero':''}">${z?'—':mo_orders.length}</td>
+      <td class="${z?'stat-zero':''}">${ms>0?'€'+ms.toFixed(2):'—'}</td>
+      <td class="${z?'stat-zero':''}">${md>0?'€'+md.toFixed(2):'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── ARHĪVS ──
+function renderArchive() {
+  const paid = getOrders().filter(o=>o.status==='apmaksats');
+  const allYears = [...new Set(paid.map(o=>(o.orderDate||'').slice(0,4)).filter(Boolean))];
+  const thisYear = String(new Date().getFullYear());
+  if (!allYears.includes(thisYear)) allYears.push(thisYear);
+  allYears.sort((a,b)=>b-a);
+  if (!allYears.includes(String(archYear))) archYear = parseInt(allYears[0]);
+
+  document.getElementById('archTabs').innerHTML = allYears.map(y=>
+    `<button class="atab${parseInt(y)===archYear?' active':''}" onclick="archYear=${y};renderArchive()">${y}</button>`
+  ).join('');
+
+  const yo = paid.filter(o=>(o.orderDate||'').startsWith(archYear))
+    .sort((a,b)=>(b.orderDate||'').localeCompare(a.orderDate||''));
+
+  const ts = yo.reduce((s,o)=>s+calcTotal(o),0);
+  const td = yo.filter(o=>o.deliveryOn).reduce((s,o)=>s+(o.delivery||0),0);
+
+  document.getElementById('archSum').innerHTML = `
+    <div class="arch-sum-tile"><div class="arch-sum-val">${yo.length}</div><div class="arch-sum-lbl">Pasūtījumi</div></div>
+    <div class="arch-sum-tile"><div class="arch-sum-val">€${ts.toFixed(2)}</div><div class="arch-sum-lbl">Kopā</div></div>
+    <div class="arch-sum-tile"><div class="arch-sum-val">€${td.toFixed(2)}</div><div class="arch-sum-lbl">Piegādes</div></div>`;
+
+  if (!yo.length) { document.getElementById('archList').innerHTML='<div class="empty"><div class="empty-icon">📁</div><div class="empty-text">Nav apmaksātu pasūtījumu '+archYear+'. gadā</div></div>'; return; }
+
+  document.getElementById('archList').innerHTML = '<div class="order-list">'+yo.map(o=>{
+    const dt = o.orderDate?new Date(o.orderDate).toLocaleDateString('lv-LV'):'';
+    return `<div class="ocard" onclick="openOrder('${o.id}')">
+      <div class="ocard-top"><div class="ocard-name">${o.clientName||'—'}</div><div class="ocard-num">${o.orderNum||''}</div></div>
+      <div class="ocard-bottom"><div class="ocard-sum">€ ${calcTotal(o).toFixed(2)}</div><div class="ocard-date">${dt}</div></div>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+// ── COPY ──
+function copyOrder() {
+  const d = collectForm();
+  const sub = d.products.reduce((s,p)=>s+(parseFloat(p.price)||0)*(parseInt(p.qty)||0),0);
+  const tot = Math.max(0, sub-(d.discount||0)+(d.deliveryOn?(d.delivery||0):0));
+  const sl  = {apmaksats:'Apmaksāts',dalejs:'Daļēji apmaksāts',neapmaksats:'Neapmaksāts',rezervets:'Rezervēts',atcelts:'Atcelts'};
+  let t = `DIDI DARBNĪCA — PASŪTĪJUMS\n━━━━━━━━━━━━━━━━━━\n`;
+  t += `Pasūtījums: ${d.orderNum}\n`;
+  t += `Klients: ${d.clientName}${d.clientId?' (ID: '+d.clientId+')':''}\n`;
+  if (d.clientPhone) t += `Tel: ${d.clientPhone}\n`;
+  if (d.clientEmail) t += `E-pasts: ${d.clientEmail}\n`;
+  if (d.orderDate)   t += `Datums: ${new Date(d.orderDate).toLocaleDateString('lv-LV')}\n`;
+  t += `━━━━━━━━━━━━━━━━━━\nPRODUKTI:\n`;
+  d.products.forEach((p,i) => {
+    if (!p.name&&!p.aroma) return;
+    const lt=(parseFloat(p.price)||0)*(parseInt(p.qty)||0);
+    t += `${i+1}. ${p.name||'—'}${p.aroma?' | '+p.aroma:''}${p.color?' | '+p.color:''}\n   ${p.qty} gb. × €${parseFloat(p.price||0).toFixed(2)} = €${lt.toFixed(2)}\n`;
+  });
+  t += `━━━━━━━━━━━━━━━━━━\n`;
+  if (d.discount>0||d.deliveryOn) {
+    t += `Produkti: €${sub.toFixed(2)}\n`;
+    if (d.discount>0) t += `Atlaide: − €${d.discount.toFixed(2)}\n`;
+    if (d.deliveryOn&&d.delivery>0) t += `Piegāde: + €${d.delivery.toFixed(2)}\n`;
+  }
+  t += `KOPĀ: €${tot.toFixed(2)}\nStatuss: ${sl[d.status]||d.status}\n\nDidi darbnīca — roku darbs mājas sajūtai`;
+  navigator.clipboard.writeText(t).then(()=>showToast('✓ Nokopēts!')).catch(()=>{
+    const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✓ Nokopēts!');
+  });
+}
+
+// ── TOAST ──
+function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+
+// ── SĀKOTNĒJIE DATI (no CSV) ──
+(function() {
+  if (!localStorage.getItem('didi_orders')) {
+    localStorage.setItem('didi_orders', '[{"id": "1700000000", "clientId": "DD-0001", "orderNum": "PN-0032", "clientName": "Laura Janitēna", "clientEmail": "", "clientPhone": "", "orderDate": "2026-05-10", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziedu pušķis", "aroma": "", "color": "", "qty": 1, "price": "25.0"}], "discount": 5.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-05-10T12:00:00.000Z"}, {"id": "1700000001", "clientId": "DD-0017", "orderNum": "PN-0029", "clientName": "Jānis (No kapiem)", "clientEmail": "", "clientPhone": "", "orderDate": "2026-04-28", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Burciņsvece: Marinēti gurķi", "aroma": "", "color": "", "qty": 2, "price": "10.0"}], "discount": 4.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-04-28T12:00:00.000Z"}, {"id": "1700000002", "clientId": "DD-0016", "orderNum": "PN-0031", "clientName": "Kristīne Baufale", "clientEmail": "", "clientPhone": "", "orderDate": "2026-05-01", "status": "apmaksats", "paidAmount": 15.0, "products": [{"name": "Ziedu pušķis", "aroma": "", "color": "", "qty": 1, "price": "25.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-05-01T12:00:00.000Z"}, {"id": "1700000003", "clientId": "DD-0020", "orderNum": "PN-0034", "clientName": "Ilze (Kaimiņiene)", "clientEmail": "", "clientPhone": "", "orderDate": "2026-05-15", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziedu pušķis", "aroma": "", "color": "", "qty": 2, "price": "20.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-05-15T12:00:00.000Z"}, {"id": "1700000004", "clientId": "DD-0019", "orderNum": "PN-0033", "clientName": "Samanta janitena", "clientEmail": "", "clientPhone": "", "orderDate": "2026-05-10", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "ziedu pušķis", "aroma": "", "color": "", "qty": 1, "price": "20.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-05-10T12:00:00.000Z"}, {"id": "1700000005", "clientId": "DD-0018", "orderNum": "PN-0030", "clientName": "Agris (No kapiem)", "clientEmail": "", "clientPhone": "", "orderDate": "2026-04-28", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Burciņsvece: Marinēti gurķi", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 2.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-04-28T12:00:00.000Z"}, {"id": "1700000006", "clientId": "DD-0006", "orderNum": "PN-0018", "clientName": "Jānis Tišonoks", "clientEmail": "", "clientPhone": "", "orderDate": "2026-01-10", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ģipša trauciņš \'Celms\'", "aroma": "", "color": "", "qty": 3, "price": "5.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-01-10T12:00:00.000Z"}, {"id": "1700000007", "clientId": "DD-0011", "orderNum": "PN-0019", "clientName": "Kristīne Cepurniece", "clientEmail": "", "clientPhone": "", "orderDate": "2026-01-10", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziepes: Zirgs pakavā", "aroma": "", "color": "", "qty": 1, "price": "3.5"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-01-10T12:00:00.000Z"}, {"id": "1700000008", "clientId": "DD-0013", "orderNum": "PN-0020", "clientName": "Kristaps Kurmis", "clientEmail": "", "clientPhone": "", "orderDate": "2026-01-16", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Trīsritenis: Sarkaniem ziediem", "aroma": "", "color": "", "qty": 1, "price": "20.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-01-16T12:00:00.000Z"}, {"id": "1700000009", "clientId": "DD-0006", "orderNum": "PN-0021", "clientName": "Jānis Tišonoks", "clientEmail": "", "clientPhone": "", "orderDate": "2026-01-18", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Svece: Pieskāriens — glāzē", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-01-18T12:00:00.000Z"}, {"id": "1700000010", "clientId": "DD-0001", "orderNum": "PN-0022", "clientName": "Laura Janitēna", "clientEmail": "", "clientPhone": "", "orderDate": "2026-02-04", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Svece: Ziedu kompozīcija — podiņš", "aroma": "", "color": "", "qty": 1, "price": "12.0"}, {"name": "Svece: Mīļuma mirklis", "aroma": "", "color": "", "qty": 2, "price": "7.0"}, {"name": "Svece glāzē", "aroma": "", "color": "", "qty": 2, "price": "4.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-02-04T12:00:00.000Z"}, {"id": "1700000011", "clientId": "DD-0014", "orderNum": "PN-0023", "clientName": "Jana Gailīša", "clientEmail": "", "clientPhone": "", "orderDate": "2026-02-07", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziedu kompozīcija — Trīsritenis", "aroma": "", "color": "", "qty": 1, "price": "20.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-02-07T12:00:00.000Z"}, {"id": "1700000012", "clientId": "DD-0013", "orderNum": "PN-0024", "clientName": "Kristaps Kurmis", "clientEmail": "", "clientPhone": "", "orderDate": "2026-02-11", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Deserta svece (Mazā)", "aroma": "", "color": "", "qty": 1, "price": "10.0"}, {"name": "Ziedi podiņā", "aroma": "", "color": "", "qty": 1, "price": "8.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-02-11T12:00:00.000Z"}, {"id": "1700000013", "clientId": "DD-0005", "orderNum": "PN-0025", "clientName": "Dainis Kondrāts", "clientEmail": "", "clientPhone": "", "orderDate": "2026-02-13", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Deserta svece (Lielā)", "aroma": "", "color": "", "qty": 1, "price": "15.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-02-13T12:00:00.000Z"}, {"id": "1700000014", "clientId": "DD-0015", "orderNum": "PN-0026", "clientName": "Jānis Reinsons", "clientEmail": "", "clientPhone": "", "orderDate": "2026-03-15", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Burciņsvece: Zemeņu ievārijums", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-03-15T12:00:00.000Z"}, {"id": "1700000015", "clientId": "DD-0005", "orderNum": "PN-0027", "clientName": "Dainis Kondrāts", "clientEmail": "", "clientPhone": "", "orderDate": "2026-03-23", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Trīsritenis: Sveču kompozīcija", "aroma": "", "color": "", "qty": 1, "price": "15.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-03-23T12:00:00.000Z"}, {"id": "1700000016", "clientId": "DD-0016", "orderNum": "PN-0028", "clientName": "Kristīne Baufale", "clientEmail": "", "clientPhone": "", "orderDate": "2026-04-03", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Kompozīcija: Sveču Ziedu pušķis", "aroma": "", "color": "", "qty": 1, "price": "15.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2026-04-03T12:00:00.000Z"}, {"id": "1700000017", "clientId": "DD-0001", "orderNum": "PN-0001", "clientName": "Laura Janitēna", "clientEmail": "", "clientPhone": "", "orderDate": "2025-06-15", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Līgo komplekts: Pretodu svece — Alus kausā. Ziepes — Siera gabala formā", "aroma": "", "color": "", "qty": 2, "price": "10.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-06-15T12:00:00.000Z"}, {"id": "1700000018", "clientId": "DD-0002", "orderNum": "PN-0002", "clientName": "Jānis Videnieks", "clientEmail": "", "clientPhone": "", "orderDate": "2025-07-14", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Līgo komplekts: Pretodu svece — Alus kausā. Ziepes — Siera gabala formā", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 0.0, "deliveryOn": true, "delivery": 4.09, "savedAt": "2025-07-14T12:00:00.000Z"}, {"id": "1700000019", "clientId": "DD-0003", "orderNum": "PN-0003", "clientName": "Elīna Strautmane", "clientEmail": "", "clientPhone": "", "orderDate": "2025-07-24", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Pretodu svece — Alus kausā", "aroma": "", "color": "", "qty": 2, "price": "6.0"}], "discount": 0.0, "deliveryOn": true, "delivery": 4.09, "savedAt": "2025-07-24T12:00:00.000Z"}, {"id": "1700000020", "clientId": "DD-0004", "orderNum": "PN-0004", "clientName": "Daila Liekne", "clientEmail": "", "clientPhone": "", "orderDate": "2025-08-01", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Līgo komplekts: Pretodu svece — Alus kausā. Ziepes — Siera gabala formā", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 0.0, "deliveryOn": true, "delivery": 4.09, "savedAt": "2025-08-01T12:00:00.000Z"}, {"id": "1700000021", "clientId": "DD-0005", "orderNum": "PN-0005", "clientName": "Dainis Kondrāts", "clientEmail": "", "clientPhone": "", "orderDate": "2025-09-09", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Sveces — Dažādi zvēriņi", "aroma": "", "color": "", "qty": 12, "price": "3.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-09-09T12:00:00.000Z"}, {"id": "1700000022", "clientId": "DD-0006", "orderNum": "PN-0006", "clientName": "Jānis Tišonoks", "clientEmail": "", "clientPhone": "", "orderDate": "2025-09-23", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziepes — Dažādi zvēriņi", "aroma": "", "color": "", "qty": 5, "price": "3.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-09-23T12:00:00.000Z"}, {"id": "1700000023", "clientId": "DD-0007", "orderNum": "PN-0007", "clientName": "Santehniķis (Sveču paradīze)", "clientEmail": "", "clientPhone": "", "orderDate": "2025-09-28", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Trīsritenis ar Vāveri", "aroma": "", "color": "", "qty": 1, "price": "15.0"}, {"name": "Ziepes — Vāvere", "aroma": "", "color": "", "qty": 1, "price": "5.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-09-28T12:00:00.000Z"}, {"id": "1700000024", "clientId": "DD-0008", "orderNum": "PN-0008", "clientName": "Nataša", "clientEmail": "", "clientPhone": "", "orderDate": "2025-09-29", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Stāvsveces", "aroma": "", "color": "", "qty": 8, "price": "3.75"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-09-29T12:00:00.000Z"}, {"id": "1700000025", "clientId": "DD-0009", "orderNum": "PN-0009", "clientName": "Lāsma Ramonosova", "clientEmail": "", "clientPhone": "", "orderDate": "2025-11-08", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Pūdervaska sveces komplekts", "aroma": "", "color": "", "qty": 1, "price": "8.0"}, {"name": "Ģipša trauciņš", "aroma": "", "color": "", "qty": 1, "price": "4.0"}, {"name": "Aromāts 5 ml", "aroma": "", "color": "", "qty": 1, "price": "2.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-11-08T12:00:00.000Z"}, {"id": "1700000026", "clientId": "DD-0010", "orderNum": "PN-0010", "clientName": "Evita Eglīte", "clientEmail": "", "clientPhone": "", "orderDate": "2025-11-27", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Sieviešu zeķes (Rozā) 39 izm.", "aroma": "", "color": "", "qty": 2, "price": "10.0"}, {"name": "Sieviešu Zābaciņi (Gaiša) 39 izm.", "aroma": "", "color": "", "qty": 2, "price": "12.5"}, {"name": "Bērnu Zeķes (Rozā) 24 izm.", "aroma": "", "color": "", "qty": 1, "price": "10.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-11-27T12:00:00.000Z"}, {"id": "1700000027", "clientId": "DD-0011", "orderNum": "PN-0011", "clientName": "Kristīne Cepurniece", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-10", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Svece: Eglīte", "aroma": "", "color": "", "qty": 1, "price": "1.5"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-10T12:00:00.000Z"}, {"id": "1700000028", "clientId": "DD-0012", "orderNum": "PN-0012", "clientName": "Žeņa (Labdarība)", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-12", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Sveces un Ziepes — labdarības komplekts", "aroma": "", "color": "", "qty": 1, "price": "122.0"}], "discount": 22.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-12T12:00:00.000Z"}, {"id": "1700000029", "clientId": "DD-0005", "orderNum": "PN-0013", "clientName": "Dainis Kondrāts", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-14", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ģipša trauks: Mini trauciņš ar mini Zirdziņu", "aroma": "", "color": "", "qty": 1, "price": "3.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-14T12:00:00.000Z"}, {"id": "1700000030", "clientId": "DD-0006", "orderNum": "PN-0014", "clientName": "Jānis Tišonoks", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-15", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ģipša trauciņi", "aroma": "", "color": "", "qty": 3, "price": "5.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-15T12:00:00.000Z"}, {"id": "1700000031", "clientId": "DD-0011", "orderNum": "PN-0015", "clientName": "Kristīne Cepurniece", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-17", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Svece — Eglīte", "aroma": "", "color": "", "qty": 3, "price": "1.5"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-17T12:00:00.000Z"}, {"id": "1700000032", "clientId": "DD-0001", "orderNum": "PN-0016", "clientName": "Laura Janitēna", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-20", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Deserta sveces", "aroma": "", "color": "", "qty": 3, "price": "12.0"}], "discount": 6.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-20T12:00:00.000Z"}, {"id": "1700000033", "clientId": "DD-0002", "orderNum": "PN-0017", "clientName": "Jānis Videnieks", "clientEmail": "", "clientPhone": "", "orderDate": "2025-12-22", "status": "apmaksats", "paidAmount": 0.0, "products": [{"name": "Ziemassvētku kompozīcija", "aroma": "", "color": "", "qty": 1, "price": "20.0"}], "discount": 0.0, "deliveryOn": false, "delivery": 0.0, "savedAt": "2025-12-22T12:00:00.000Z"}]');
+  }
+  if (!localStorage.getItem('didi_clients')) {
+    localStorage.setItem('didi_clients', '[{"id": "DD-0001", "name": "Laura Janitēna", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0017", "name": "Jānis (No kapiem)", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0016", "name": "Kristīne Baufale", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0020", "name": "Ilze (Kaimiņiene)", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0019", "name": "Samanta janitena", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0018", "name": "Agris (No kapiem)", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0006", "name": "Jānis Tišonoks", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0011", "name": "Kristīne Cepurniece", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0013", "name": "Kristaps Kurmis", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0014", "name": "Jana Gailīša", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0005", "name": "Dainis Kondrāts", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0015", "name": "Jānis Reinsons", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0002", "name": "Jānis Videnieks", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0003", "name": "Elīna Strautmane", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0004", "name": "Daila Liekne", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0007", "name": "Santehniķis (Sveču paradīze)", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0008", "name": "Nataša", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0009", "name": "Lāsma Ramonosova", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0010", "name": "Evita Eglīte", "createdAt": "2025-01-01T00:00:00.000Z"}, {"id": "DD-0012", "name": "Žeņa (Labdarība)", "createdAt": "2025-01-01T00:00:00.000Z"}]');
+  }
+})();
+
+// ── SERVICE WORKER ──
+if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('/sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
